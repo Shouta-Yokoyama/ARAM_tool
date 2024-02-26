@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 24px;
+            background-color: #15171b;
+            color: #fff;
+        }
+
+        th {
+            width: 33%;
+        }
+
+        #form {
+            vertical-align: top;
+        }
+
+        #name_area {
+            text-align: center;
+        }
+
+        #slider {
+            width: 90%;
+        }
+
+        #blue_side,
+        #red_side {
+            text-align: center;
+        }
+
+        input[type="text"] {
+            height: 50px;
+            width: 40%;
+            display: inline;
+            border: 0;
+            outline: none;
+            padding: 0 2%;
+            margin: 2% 2%;
+            font-size: 24px;
+            background: #000000;
+            color: #fff;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            margin: 2px;
+        }
+    </style>
+    <link type="text/css" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script type="module">
+        import data from "./champion_list.json" assert {type: "json"};
+        //console.log(data);
+
+        $(function () {
+            $("#submit").button({ label: "ランダム！" });
+            $("#submit").on("click", (event, ui) => {
+                let player = [];
+                $(".name").each((i, e) => {
+                    player.push($(e).val());
+                });
+                //console.log(player);
+                let shuffled_player_list = shuffle_player(player);
+                console.log(shuffled_player_list);
+
+                $("#blue_side").empty();
+                $("#red_side").empty();
+
+                for (let i = 0; i < shuffled_player_list.length; i++) {
+                    if (i % 2 == 0) {
+                        $("#blue_side").append("<div>" + shuffled_player_list[i] + "</div>");
+                    } else {
+                        $("#red_side").append("<div>" + shuffled_player_list[i] + "</div>");
+                    }
+                }
+
+                let selected_list = [];
+                selected_list.push(set_img("#blue_side", selected_list));
+                //console.log(selected_list);
+                if ($("#isAllowedToMirror").is(":checked")) selected_list = [];
+                selected_list.push(set_img("#red_side", selected_list));
+                //console.log(selected_list);
+            });
+
+            $("#slider").slider({
+                min: 1, max: 5,
+                step: 1, value: 5,
+                slide: (event, ui) => {
+                    $("#player_num").text(ui.value);
+                    $("#name_area").empty();
+                    for (let i = 0; i < ui.value; i++) {
+                        $("#name_area").append("<input type='text' class='name'><input type='text' class='name'><br>");
+                    }
+                }
+            })
+        });
+
+        const set_img = (team, list) => {
+            for (let i = 0; i < $("#slider").slider("value") * 3;) {
+                let rand = Math.floor(Math.random() * data.length);
+                //console.log(data[rand]);
+                if (list.includes(rand)) {
+                    //console.log("被り発生!");
+                    continue;
+                } else if($("#isAllowedToPickRanged").is(":checked") && data[rand].range == "Ranged"){
+                    //console.log("レンジは除外！");
+                    continue;
+                }else{
+                    list.push(rand);
+                    //console.log(rand);
+                    $(team).append("<img src='" + data[rand].img_url + "' />");
+                    if (i % 3 == 1 && i !== 1) $(team).append("<br>");
+                    i++;
+                };
+            }
+            return list;
+        }
+
+        const shuffle_player = (player_list) => {
+            for (let i = player_list.length; 1 < i; i--) {
+                let k = Math.floor(Math.random() * i);
+                [player_list[k], player_list[i - 1]] = [player_list[i - 1], player_list[k]];
+            }
+            //console.log(player_list);
+            return player_list;
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Random Tool</h1>
+    <table id="icon_table">
+        <tr>
+            <th>config</th>
+            <th style="background: #0a4264;">Blue Side</th>
+            <th style="background: #be2038;">Red Side</th>
+        </tr>
+        <tr>
+            <td id="form">
+                <p>１チームのプレイヤーの数:<span id="player_num">5</span></p>
+                <p id="slider"></p>
+                <p>ミラーマッチを含める:<input type="checkbox" id="isAllowedToMirror" checked></p>
+                <p>メレ―限定！:<input type="checkbox" id="isAllowedToPickRanged"></p>
+                <!-- <p>randamの個数</p> -->
+                <div id="name_area">
+                    <input type='text' class='name'><input type='text' class='name'><br>
+                    <input type='text' class='name'><input type='text' class='name'><br>
+                    <input type='text' class='name'><input type='text' class='name'><br>
+                    <input type='text' class='name'><input type='text' class='name'><br>
+                    <input type='text' class='name'><input type='text' class='name'><br>
+                </div>
+                <p><button id="submit"></button></p>
+            </td>
+            <td id="blue_side"></td>
+            <td id="red_side"></td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

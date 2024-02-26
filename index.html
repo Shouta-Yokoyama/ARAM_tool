@@ -58,6 +58,7 @@
     <script type="module">
         import data from "./champion_list.json" assert {type: "json"};
         //console.log(data);
+        const SELECTING_CHAMIPON_PER_PLAYER = 2;
 
         $(function () {
             $("#submit").button({ label: "ランダム！" });
@@ -82,10 +83,11 @@
                 }
 
                 let selected_list = [];
-                selected_list.push(set_img("#blue_side", selected_list));
+                //console.log(selected_list);
+                set_img("#blue_side", selected_list);
                 //console.log(selected_list);
                 if ($("#isAllowedToMirror").is(":checked")) selected_list = [];
-                selected_list.push(set_img("#red_side", selected_list));
+                set_img("#red_side", selected_list);
                 //console.log(selected_list);
             });
 
@@ -103,7 +105,7 @@
         });
 
         const set_img = (team, list) => {
-            for (let i = 0; i < $("#slider").slider("value") * 3;) {
+            for (let i = 0; i < $("#slider").slider("value") * SELECTING_CHAMIPON_PER_PLAYER;) {
                 let rand = Math.floor(Math.random() * data.length);
                 //console.log(data[rand]);
                 if (list.includes(rand)) {
@@ -116,11 +118,11 @@
                     list.push(rand);
                     //console.log(rand);
                     $(team).append("<img src='" + data[rand].img_url + "' />");
-                    if (i % 3 == 1 && i !== 1) $(team).append("<br>");
+                    if (i % SELECTING_CHAMIPON_PER_PLAYER == SELECTING_CHAMIPON_PER_PLAYER-1) $(team).append("<br>");
                     i++;
                 };
             }
-            return list;
+            return;
         }
 
         const shuffle_player = (player_list) => {
@@ -157,6 +159,7 @@
                     <input type='text' class='name'><input type='text' class='name'><br>
                 </div>
                 <p><button id="submit"></button></p>
+                <div>チャンピオンが追加された場合、scraplolwiki.pyを実行してチャンピオンリストを更新してください。</div>
             </td>
             <td id="blue_side"></td>
             <td id="red_side"></td>

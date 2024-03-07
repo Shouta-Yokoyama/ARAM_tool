@@ -4,6 +4,7 @@
 ## 概要
 ゲーム「League of Legends」におけるカスタムゲームで、ローカルルールで遊ぶ時用のツールです。
 ゲームに参加するプレイヤー全員の名前を入力して「ランダム！」ボタンを押すとチーム分けをされチャンピオンのアイコンが表示されます。
+![image](https://github.com/Shouta-Yokoyama/ARAM_tool/assets/107053299/023a597c-93f7-4c54-9ad7-f5b52f7160f7)
 ## 使い方
 1. 本家ゲームLoLのアップデートが入った場合、ツールを起動する前にchampion_list.jsonの中身を更新する必要があります。scraplolwiki.pyを起動する。(リポジトリに含まれているchampion_list.jsonのバージョンは14.4)
 ```
